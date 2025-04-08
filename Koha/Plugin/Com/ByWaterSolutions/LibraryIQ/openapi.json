@@ -1,0 +1,376 @@
+{
+    "/records/full": {
+        "get": {
+            "x-mojo-to": "Com::ByWaterSolutions::LibraryIQ::API#records_full",
+            "operationId": "libraryIqGetRecordsAll",
+            "tags": [
+                "records"
+            ],
+            "produces": [
+                "application/tsv"
+            ],
+            "responses": {
+                "200": {
+                    "description": "Data"
+                },
+                "404": {
+                    "description": "An error occured",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "description": "An explanation for the error",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "x-koha-authorization": {
+                "permissions": {
+                    "catalogue": "1"
+                }
+            }
+        }
+    },
+    "/records/delta": {
+        "get": {
+            "x-mojo-to": "Com::ByWaterSolutions::LibraryIQ::API#records_delta",
+            "operationId": "libraryIqGetRecordsDelta",
+            "tags": [
+                "records"
+            ],
+            "produces": [
+                "application/tsv"
+            ],
+            "responses": {
+                "200": {
+                    "description": "Data"
+                },
+                "404": {
+                    "description": "An error occured",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "description": "An explanation for the error",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "x-koha-authorization": {
+                "permissions": {
+                    "catalogue": "1"
+                }
+            }
+        }
+    },
+    "/items/full": {
+        "get": {
+            "x-mojo-to": "Com::ByWaterSolutions::LibraryIQ::API#items_full",
+            "operationId": "libraryIqGetItemsFull",
+            "tags": [
+                "items"
+            ],
+            "produces": [
+                "application/tsv"
+            ],
+            "responses": {
+                "200": {
+                    "description": "Data"
+                },
+                "404": {
+                    "description": "An error occured",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "description": "An explanation for the error",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "x-koha-authorization": {
+                "permissions": {
+                    "catalogue": "1"
+                }
+            }
+        }
+    },
+    "/items/delta": {
+        "get": {
+            "x-mojo-to": "Com::ByWaterSolutions::LibraryIQ::API#items_delta",
+            "operationId": "libraryIqGetItemsDelta",
+            "tags": [
+                "items"
+            ],
+            "produces": [
+                "application/tsv"
+            ],
+            "responses": {
+                "200": {
+                    "description": "Data"
+                },
+                "404": {
+                    "description": "An error occured",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "description": "An explanation for the error",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "x-koha-authorization": {
+                "permissions": {
+                    "catalogue": "1"
+                }
+            }
+        }
+    },
+    "/circulation/full": {
+        "get": {
+            "x-mojo-to": "Com::ByWaterSolutions::LibraryIQ::API#circulation_full",
+            "operationId": "libraryIqGetCirculationFull",
+            "tags": [
+                "circulation"
+            ],
+            "produces": [
+                "application/tsv"
+            ],
+            "responses": {
+                "200": {
+                    "description": "Data"
+                },
+                "404": {
+                    "description": "An error occured",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "description": "An explanation for the error",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "x-koha-authorization": {
+                "permissions": {
+                    "catalogue": "1"
+                }
+            }
+        }
+    },
+    "/circulation/delta": {
+        "get": {
+            "x-mojo-to": "Com::ByWaterSolutions::LibraryIQ::API#circulation_delta",
+            "operationId": "libraryIqGetCirculationDelta",
+            "tags": [
+                "circulation"
+            ],
+            "produces": [
+                "application/tsv"
+            ],
+            "responses": {
+                "200": {
+                    "description": "Data"
+                },
+                "404": {
+                    "description": "An error occured",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "description": "An explanation for the error",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "x-koha-authorization": {
+                "permissions": {
+                    "catalogue": "1"
+                }
+            }
+        }
+    },
+    "/circulation/in_house/full": {
+        "get": {
+            "x-mojo-to": "Com::ByWaterSolutions::LibraryIQ::API#circulation_in_house_full",
+            "operationId": "libraryIqGetCirculationInHouseFull",
+            "tags": [
+                "circulation_in_house"
+            ],
+            "produces": [
+                "application/tsv"
+            ],
+            "responses": {
+                "200": {
+                    "description": "Data"
+                },
+                "404": {
+                    "description": "An error occured",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "description": "An explanation for the error",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "x-koha-authorization": {
+                "permissions": {
+                    "catalogue": "1"
+                }
+            }
+        }
+    },
+    "/circulation/in_house/delta": {
+        "get": {
+            "x-mojo-to": "Com::ByWaterSolutions::LibraryIQ::API#circulation_in_house_delta",
+            "operationId": "libraryIqGetCirculationInHouseDelta",
+            "tags": [
+                "circulation_in_house"
+            ],
+            "produces": [
+                "application/tsv"
+            ],
+            "responses": {
+                "200": {
+                    "description": "Data"
+                },
+                "404": {
+                    "description": "An error occured",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "description": "An explanation for the error",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "x-koha-authorization": {
+                "permissions": {
+                    "catalogue": "1"
+                }
+            }
+        }
+    },
+    "/patrons/full": {
+        "get": {
+            "x-mojo-to": "Com::ByWaterSolutions::LibraryIQ::API#patrons_full",
+            "operationId": "libraryIqGetPatronsFull",
+            "tags": [
+                "patrons"
+            ],
+            "produces": [
+                "application/tsv"
+            ],
+            "responses": {
+                "200": {
+                    "description": "Data"
+                },
+                "404": {
+                    "description": "An error occured",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "description": "An explanation for the error",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "x-koha-authorization": {
+                "permissions": {
+                    "catalogue": "1"
+                }
+            }
+        }
+    },
+    "/patrons/delta": {
+        "get": {
+            "x-mojo-to": "Com::ByWaterSolutions::LibraryIQ::API#patrons_delta",
+            "operationId": "libraryIqGetPatronsDelta",
+            "tags": [
+                "patrons"
+            ],
+            "produces": [
+                "application/tsv"
+            ],
+            "responses": {
+                "200": {
+                    "description": "Data"
+                },
+                "404": {
+                    "description": "An error occured",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "description": "An explanation for the error",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "x-koha-authorization": {
+                "permissions": {
+                    "catalogue": "1"
+                }
+            }
+        }
+    },
+    "/holds/delta": {
+        "get": {
+            "x-mojo-to": "Com::ByWaterSolutions::LibraryIQ::API#holds_delta",
+            "operationId": "libraryIqGetHoldsDelta",
+            "tags": [
+                "holds"
+            ],
+            "produces": [
+                "application/tsv"
+            ],
+            "responses": {
+                "200": {
+                    "description": "Data"
+                },
+                "404": {
+                    "description": "An error occured",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "description": "An explanation for the error",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "x-koha-authorization": {
+                "permissions": {
+                    "catalogue": "1"
+                }
+            }
+        }
+    }
+}
