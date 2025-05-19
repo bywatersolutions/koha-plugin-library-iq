@@ -57,6 +57,7 @@ FROM   biblio b
 
         return $c->render( status => 200, format => "text", text => $tsv );
     } catch {
+        warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
@@ -94,6 +95,7 @@ WHERE  b.timestamp > Now() - INTERVAL 3 day
 
         return $c->render( status => 200, format => "text", text => $tsv );
     } catch {
+        warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
@@ -160,6 +162,7 @@ FROM   items i
 
         return $c->render( status => 200, format => "text", text => $tsv );
     } catch {
+        warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
@@ -227,6 +230,7 @@ WHERE  i.timestamp > Now() - INTERVAL 3 day
 
         return $c->render( status => 200, format => "text", text => $tsv );
     } catch {
+        warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
@@ -264,6 +268,7 @@ WHERE  type IN ( 'issue', 'renew' )
 
         return $c->render( status => 200, format => "text", text => $tsv );
     } catch {
+        warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
@@ -301,6 +306,7 @@ WHERE  type IN ( 'issue', 'renew' )
 
         return $c->render( status => 200, format => "text", text => $tsv );
     } catch {
+        warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
@@ -336,6 +342,7 @@ WHERE address <> '' AND city <> '' AND state <> '' AND zipcode <> ''
 
         return $c->render( status => 200, format => "text", text => $tsv );
     } catch {
+        warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
@@ -371,6 +378,7 @@ WHERE address <> '' AND city <> '' AND state <> '' AND zipcode <> '' AND (DATE(b
 
         return $c->render( status => 200, format => "text", text => $tsv );
     } catch {
+        warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
@@ -408,6 +416,7 @@ GROUP  BY biblionumber,
 
         return $c->render( status => 200, format => "text", text => $tsv );
     } catch {
+        warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
@@ -445,6 +454,7 @@ WHERE  type = 'localuse'
 
         return $c->render( status => 200, format => "text", text => $tsv );
     } catch {
+        warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
@@ -482,6 +492,7 @@ WHERE  type = 'localuse'
 
         return $c->render( status => 200, format => "text", text => $tsv );
     } catch {
+        warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
