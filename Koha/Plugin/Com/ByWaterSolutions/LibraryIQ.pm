@@ -43,11 +43,25 @@ sub new {
 sub install() {
     my ($self, $args) = @_;
 
+    C4::Context->dbh->do(q{
+        ALTER TABLE `statistics`
+          ADD KEY `idx_liq_borrowernumber` (`borrowernumber`),
+          ADD KEY `idx_liq_itemnumber` (`itemnumber`),
+          ADD KEY `idx_liq_stats_borrower_type_date` (`borrowernumber`,`type`,`datetime`);
+    });
+
     return 1;
 }
 
 sub upgrade {
     my ($self, $args) = @_;
+
+    C4::Context->dbh->do(q{
+        ALTER TABLE `statistics`
+          ADD KEY `idx_liq_borrowernumber` (`borrowernumber`),
+          ADD KEY `idx_liq_itemnumber` (`itemnumber`),
+          ADD KEY `idx_liq_stats_borrower_type_date` (`borrowernumber`,`type`,`datetime`);
+    });
 
     return 1;
 }
