@@ -53,8 +53,8 @@ sub install() {
     return 1;
 }
 
-sub upgrade {
-    my ($self, $args) = @_;
+sub cronjob_nightly {
+    my ($self) = @_;
 
     C4::Context->dbh->do(q{
         ALTER TABLE `statistics`
