@@ -372,5 +372,175 @@
                 }
             }
         }
+    },
+    "/requestedHolds/full": {
+        "get": {
+            "x-mojo-to": "Com::ByWaterSolutions::LibraryIQ::API#requested_holds_full",
+            "operationId": "libraryIqGetRequestedHoldsFull",
+            "tags": [
+                "requested_holds"
+            ],
+            "produces": [
+                "application/tsv"
+            ],
+            "responses": {
+                "200": {
+                    "description": "Data"
+                },
+                "404": {
+                    "description": "An error occured",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "description": "An explanation for the error",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "x-koha-authorization": {
+                "permissions": {
+                    "catalogue": "1"
+                }
+            }
+        }
+    },
+    "/requestedHolds/delta": {
+        "get": {
+            "x-mojo-to": "Com::ByWaterSolutions::LibraryIQ::API#requested_holds_delta",
+            "operationId": "libraryIqGetRequestedHoldsDelta",
+            "tags": [
+                "requested_holds"
+            ],
+            "produces": [
+                "application/tsv"
+            ],
+            "responses": {
+                "200": {
+                    "description": "Data"
+                },
+                "404": {
+                    "description": "An error occured",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "description": "An explanation for the error",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "x-koha-authorization": {
+                "permissions": {
+                    "catalogue": "1"
+                }
+            }
+        }
+    },
+    "/fulfilledHolds/full": {
+        "get": {
+            "x-mojo-to": "Com::ByWaterSolutions::LibraryIQ::API#fulfilled_holds_full",
+            "operationId": "libraryIqGetFulfilledHoldsFull",
+            "tags": [
+                "fulfilled_holds"
+            ],
+            "produces": [
+                "application/tsv"
+            ],
+            "responses": {
+                "200": {
+                    "description": "Data"
+                },
+                "404": {
+                    "description": "An error occured",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "description": "An explanation for the error",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "x-koha-authorization": {
+                "permissions": {
+                    "catalogue": "1"
+                }
+            }
+        }
+    },
+    "/fulfilledHolds/delta": {
+        "get": {
+            "x-mojo-to": "Com::ByWaterSolutions::LibraryIQ::API#fulfilled_holds_delta",
+            "operationId": "libraryIqGetFulfilledHoldsDelta",
+            "tags": [
+                "fulfilled_holds"
+            ],
+            "produces": [
+                "application/tsv"
+            ],
+            "responses": {
+                "200": {
+                    "description": "Data"
+                },
+                "404": {
+                    "description": "An error occured",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "description": "An explanation for the error",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "x-koha-authorization": {
+                "permissions": {
+                    "catalogue": "1"
+                }
+            }
+        }
+    },
+    "/unfilledHolds/full": {
+        "get": {
+            "x-mojo-to": "Com::ByWaterSolutions::LibraryIQ::API#unfilled_holds_full",
+            "operationId": "libraryIqGetUnfilledHoldsFull",
+            "tags": [
+                "unfilled_holds"
+            ],
+            "produces": [
+                "application/tsv"
+            ],
+            "responses": {
+                "200": {
+                    "description": "Data"
+                },
+                "404": {
+                    "description": "An error occured",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "description": "An explanation for the error",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "x-koha-authorization": {
+                "permissions": {
+                    "catalogue": "1"
+                }
+            }
+        }
     }
 }

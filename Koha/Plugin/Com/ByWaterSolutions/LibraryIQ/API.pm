@@ -131,7 +131,31 @@ sub items_full {
         WHERE  s.type IN ( 'issue', 'renew' )
                AND i.itemnumber = s.itemnumber
                AND Date(s.datetime) >= Concat( Date_format( Last_day( Now() - INTERVAL 1 month), '%Y-' ), '01-01') ) AS YTD,
-       i.issues + Ifnull(i.renewals, 0) AS lifetime
+       i.issues + Ifnull(i.renewals, 0) AS lifetime,
+        i.datelastseen AS last_inventoried_date,
+  i.`timestamp`   AS last_item_update,
+  COALESCE(
+  NULLIF(
+    GREATEST(
+      COALESCE(i.withdrawn_on, DATE '1900-01-01'),
+      COALESCE(i.itemlost_on, DATE '1900-01-01'),
+      COALESCE(i.damaged_on, DATE '1900-01-01')
+      -- add notforloan_on, restricted_on if your schema has them
+    ),
+    DATE '1900-01-01'
+  ),
+  (
+    SELECT MAX(al.`timestamp`)
+    FROM action_logs al
+    WHERE al.object = i.itemnumber
+      AND al.module IN ('CATALOGUING','CIRCULATION')
+      AND al.action IN ('MODIFY','SET_STATUS','UPDATE')
+      AND al.info REGEXP '(damaged|itemlost|withdrawn|notforloan|restricted)'
+  )
+) AS last_status_change_date
+
+       
+
 FROM   items i
        JOIN biblioitems bi
          ON i.biblionumber = bi.biblionumber
@@ -153,7 +177,7 @@ FROM   items i
         my $sth = $dbh->prepare($query);
         $sth->execute();
 
-        my @columns = ( 'item number', 'barcode', 'biblio number', 'isbn', 'collection code', 'item type', 'holding branch','home branch', 'cfull number', 'location', 'date accessioned', 'not for loan', 'damaged', 'item lost', 'withdrawn', 'to branch', 'found', 'date last borrowed', 'due date',  'ytd', 'lifetime circs' );
+        my @columns = ( 'item number', 'barcode', 'biblio number', 'isbn', 'collection code', 'item type', 'holding branch','home branch', 'cfull number', 'location', 'date accessioned', 'not for loan', 'damaged', 'item lost', 'withdrawn', 'to branch', 'found', 'date last borrowed', 'due date',  'ytd', 'lifetime circs', 'last inventoried date', 'last item update', 'last status change date' );
         my $tsv = join("\t", @columns) . "\n";
 
         while (my @row = $sth->fetchrow_array) {
@@ -198,7 +222,31 @@ sub items_delta {
         WHERE  s.type IN ( 'issue', 'renew' )
                AND i.itemnumber = s.itemnumber
                AND Date(s.datetime) >= Concat( Date_format( Last_day( Now() - INTERVAL 1 month), '%Y-' ), '01-01') ) AS YTD,
-       i.issues + Ifnull(i.renewals, 0) AS lifetime
+       i.issues + Ifnull(i.renewals, 0) AS lifetime,
+        i.datelastseen AS last_inventoried_date,
+  i.`timestamp`   AS last_item_update,
+  COALESCE(
+  NULLIF(
+    GREATEST(
+      COALESCE(i.withdrawn_on, DATE '1900-01-01'),
+      COALESCE(i.itemlost_on, DATE '1900-01-01'),
+      COALESCE(i.damaged_on, DATE '1900-01-01')
+      -- add notforloan_on, restricted_on if your schema has them
+    ),
+    DATE '1900-01-01'
+  ),
+  (
+    SELECT MAX(al.`timestamp`)
+    FROM action_logs al
+    WHERE al.object = i.itemnumber
+      AND al.module IN ('CATALOGUING','CIRCULATION')
+      AND al.action IN ('MODIFY','SET_STATUS','UPDATE')
+      AND al.info REGEXP '(damaged|itemlost|withdrawn|notforloan|restricted)'
+  )
+) AS last_status_change_date
+
+       
+
 FROM   items i
        JOIN biblioitems bi
          ON i.biblionumber = bi.biblionumber
@@ -221,7 +269,7 @@ WHERE  i.timestamp > Now() - INTERVAL 3 day
         my $sth = $dbh->prepare($query);
         $sth->execute();
 
-        my @columns = ( 'item number', 'barcode', 'biblio number', 'isbn', 'collection code', 'item type', 'holding branch','home branch', 'cfull number', 'location', 'date accessioned', 'not for loan', 'damaged', 'item lost', 'withdrawn', 'to branch', 'found', 'date last borrowed', 'due date',  'ytd', 'lifetime circs' );
+        my @columns = ( 'item number', 'barcode', 'biblio number', 'isbn', 'collection code', 'item type', 'holding branch','home branch', 'cfull number', 'location', 'date accessioned', 'not for loan', 'damaged', 'item lost', 'withdrawn', 'to branch', 'found', 'date last borrowed', 'due date',  'ytd', 'lifetime circs', 'last inventoried date', 'last item update', 'last status change date' );
         my $tsv = join("\t", @columns) . "\n";
 
         while (my @row = $sth->fetchrow_array) {
@@ -484,6 +532,240 @@ WHERE  type = 'localuse'
         $sth->execute();
 
         my @columns = ( 'item number', 'barcode', 'biblio number',  'datetime', 'branch', 'patron id' );
+        my $tsv = join("\t", @columns) . "\n";
+
+        while (my @row = $sth->fetchrow_array) {
+            $tsv .= join("\t", @row) . "\n";
+        }
+
+        return $c->render( status => 200, format => "text", text => $tsv );
+    } catch {
+        warn "LibraryIQ Plugin ERROR: $_";
+        $c->unhandled_exception($_);
+    };
+}
+
+sub requested_holds_full {
+    warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::requested_holds_full";
+    my $c = shift->openapi->valid_input or return;
+
+    return try {
+
+        my $query = q{
+SELECT 
+        r.biblionumber AS BibliographicRecordID,
+        r.reserve_id AS HoldRequestID,
+        r.branchcode AS pickupLocation,
+        r.reservedate AS RequestedDate,
+        Now() AS ReportDate
+    FROM reserves r
+    WHERE r.biblionumber IS NOT NULL 
+        AND r.branchcode IS NOT NULL 
+        AND r.reservedate >= Now() - INTERVAL 2 year
+        AND r.reservedate < Now()
+
+    UNION ALL
+
+    SELECT 
+        res.biblionumber AS BibliographicRecordID,
+        res.reserve_id AS HoldRequestID,
+        res.branchcode AS pickupLocation,
+        res.reservedate AS RequestedDate,
+        Now() AS ReportDate
+    FROM old_reserves res    
+    WHERE res.biblionumber IS NOT NULL 
+        AND res.branchcode IS NOT NULL 
+        AND res.reservedate >= Now() - INTERVAL 2 year
+        AND res.reservedate < Now()
+        };
+
+        my $dbh = C4::Context->dbh;
+        my $sth = $dbh->prepare($query);
+        $sth->execute();
+
+        my @columns = ( 'BibliographicRecordID', 'HoldRequestID', 'pickupLocation', 'RequestedDate', 'ReportDate' );
+        my $tsv = join("\t", @columns) . "\n";
+
+        while (my @row = $sth->fetchrow_array) {
+            $tsv .= join("\t", @row) . "\n";
+        }
+
+        return $c->render( status => 200, format => "text", text => $tsv );
+    } catch {
+        warn "LibraryIQ Plugin ERROR: $_";
+        $c->unhandled_exception($_);
+    };
+}
+
+sub requested_holds_delta {
+    warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::requested_holds_delta";
+    my $c = shift->openapi->valid_input or return;
+
+    return try {
+
+        my $query = q{
+SELECT 
+        r.biblionumber AS BibliographicRecordID,
+        r.reserve_id AS HoldRequestID,
+        r.branchcode AS pickupLocation,
+        r.reservedate AS RequestedDate,
+        Now() AS ReportDate
+    FROM reserves r
+    WHERE r.biblionumber IS NOT NULL 
+        AND r.branchcode IS NOT NULL 
+        AND r.reservedate >= Now() - INTERVAL 1 week
+        AND r.reservedate < Now()
+
+    UNION ALL
+
+    SELECT 
+        res.biblionumber AS BibliographicRecordID,
+        res.reserve_id AS HoldRequestID,
+        res.branchcode AS pickupLocation,
+        res.reservedate AS RequestedDate,
+        Now() AS ReportDate
+    FROM old_reserves res    
+    WHERE res.biblionumber IS NOT NULL 
+        AND res.branchcode IS NOT NULL 
+        AND res.reservedate >= Now() - INTERVAL 1 week
+        AND res.reservedate < Now()
+        };
+
+        my $dbh = C4::Context->dbh;
+        my $sth = $dbh->prepare($query);
+        $sth->execute();
+
+        my @columns = ( 'BibliographicRecordID', 'HoldRequestID', 'pickupLocation', 'RequestedDate', 'ReportDate' );
+        my $tsv = join("\t", @columns) . "\n";
+
+        while (my @row = $sth->fetchrow_array) {
+            $tsv .= join("\t", @row) . "\n";
+        }
+
+        return $c->render( status => 200, format => "text", text => $tsv );
+    } catch {
+        warn "LibraryIQ Plugin ERROR: $_";
+        $c->unhandled_exception($_);
+    };
+}
+
+sub fulfilled_holds_full {
+    warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::fulfilled_holds_full";
+    my $c = shift->openapi->valid_input or return;
+
+    return try {
+
+        my $query = q{
+SELECT 
+        res.biblionumber AS BibliographicRecordID,
+        res.reserve_id AS HoldRequestID,
+        res.branchcode as pickupLocation,
+        res.waitingdate AS FulfilledDate,
+        Now() AS ReportDate
+    FROM old_reserves res
+        LEFT JOIN borrowers b ON res.borrowernumber = b.borrowernumber
+        LEFT JOIN deletedborrowers db ON res.borrowernumber = db.borrowernumber
+        LEFT JOIN biblio bib ON res.biblionumber = bib.biblionumber
+        LEFT JOIN deletedbiblio dbib ON res.biblionumber = dbib.biblionumber
+        LEFT JOIN items i ON res.itemnumber = i.itemnumber
+        LEFT JOIN deleteditems di ON res.itemnumber = di.itemnumber
+        LEFT JOIN branches br ON res.branchcode = br.branchcode
+    WHERE res.biblionumber IS NOT NULL 
+        AND res.branchcode IS NOT NULL 
+        AND res.found = 'F'  
+        AND res.waitingdate >= Now() - INTERVAL 2 year
+        AND res.waitingdate < Now()
+        };
+
+        my $dbh = C4::Context->dbh;
+        my $sth = $dbh->prepare($query);
+        $sth->execute();
+
+        my @columns = ( 'BibliographicRecordID', 'HoldRequestID', 'pickupLocation', 'FulfilledDate', 'ReportDate' );
+        my $tsv = join("\t", @columns) . "\n";
+
+        while (my @row = $sth->fetchrow_array) {
+            $tsv .= join("\t", @row) . "\n";
+        }
+
+        return $c->render( status => 200, format => "text", text => $tsv );
+    } catch {
+        warn "LibraryIQ Plugin ERROR: $_";
+        $c->unhandled_exception($_);
+    };
+}
+
+sub fulfilled_holds_delta {
+    warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::fulfilled_holds_delta";
+    my $c = shift->openapi->valid_input or return;
+
+    return try {
+
+        my $query = q{
+SELECT 
+        res.biblionumber AS BibliographicRecordID,
+        res.reserve_id AS HoldRequestID,
+        res.branchcode as pickupLocation,
+        res.waitingdate AS FulfilledDate,
+        Now() AS ReportDate
+    FROM old_reserves res
+        LEFT JOIN borrowers b ON res.borrowernumber = b.borrowernumber
+        LEFT JOIN deletedborrowers db ON res.borrowernumber = db.borrowernumber
+        LEFT JOIN biblio bib ON res.biblionumber = bib.biblionumber
+        LEFT JOIN deletedbiblio dbib ON res.biblionumber = dbib.biblionumber
+        LEFT JOIN items i ON res.itemnumber = i.itemnumber
+        LEFT JOIN deleteditems di ON res.itemnumber = di.itemnumber
+        LEFT JOIN branches br ON res.branchcode = br.branchcode
+    WHERE res.biblionumber IS NOT NULL 
+        AND res.branchcode IS NOT NULL 
+        AND res.found = 'F'  
+        AND res.waitingdate >= Now() - INTERVAL 1 week
+        AND res.waitingdate < Now()
+        };
+
+        my $dbh = C4::Context->dbh;
+        my $sth = $dbh->prepare($query);
+        $sth->execute();
+
+        my @columns = ( 'BibliographicRecordID', 'HoldRequestID', 'pickupLocation', 'FulfilledDate', 'ReportDate' );
+        my $tsv = join("\t", @columns) . "\n";
+
+        while (my @row = $sth->fetchrow_array) {
+            $tsv .= join("\t", @row) . "\n";
+        }
+
+        return $c->render( status => 200, format => "text", text => $tsv );
+    } catch {
+        warn "LibraryIQ Plugin ERROR: $_";
+        $c->unhandled_exception($_);
+    };
+}
+
+sub unfilled_holds_full {
+    warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::unfilled_holds_full";
+    my $c = shift->openapi->valid_input or return;
+
+    return try {
+
+        my $query = q{
+SELECT 
+        r.biblionumber as BibliographicRecordID,
+        r.reserve_id AS HoldRequestID,
+        r.reservedate AS RequestedDate,
+        r.branchcode AS RequestedPickupLocation
+    FROM reserves r
+        LEFT JOIN borrowers b ON r.borrowernumber = b.borrowernumber
+        LEFT JOIN biblio bib ON r.biblionumber = bib.biblionumber
+    WHERE  (r.found IS NULL OR r.found = 'T')
+        AND r.suspend = 0
+    ORDER BY r.priority ASC
+        };
+
+        my $dbh = C4::Context->dbh;
+        my $sth = $dbh->prepare($query);
+        $sth->execute();
+
+        my @columns = ( 'BibliographicRecordID', 'HoldRequestID', 'RequestedDate', 'RequestedPickupLocation' );
         my $tsv = join("\t", @columns) . "\n";
 
         while (my @row = $sth->fetchrow_array) {
