@@ -49,15 +49,24 @@ FROM   biblio b
         my $sth = $dbh->prepare($query);
         $sth->execute();
 
-        my @columns = ( 'biblio number','isbn','item type','title','author','copyright date', 'publisher code' );
-        my $tsv = join("\t", @columns) . "\n";
+        my @columns = (
+            'biblio number',
+            'isbn',
+            'item type',
+            'title',
+            'author',
+            'copyright date',
+            'publisher code'
+        );
+        my $tsv = join( "\t", @columns ) . "\n";
 
-        while (my @row = $sth->fetchrow_array) {
-            $tsv .= join("\t", @row) . "\n";
+        while ( my @row = $sth->fetchrow_array ) {
+            $tsv .= join( "\t", @row ) . "\n";
         }
 
         return $c->render( status => 200, format => "text", text => $tsv );
-    } catch {
+    }
+    catch {
         warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
@@ -89,15 +98,24 @@ WHERE  b.timestamp > Now() - INTERVAL 3 day
         my $sth = $dbh->prepare($query);
         $sth->execute();
 
-        my @columns = ( 'biblio number','isbn','item type','title','author','copyright date', 'publisher code' );
-        my $tsv = join("\t", @columns) . "\n";
+        my @columns = (
+            'biblio number',
+            'isbn',
+            'item type',
+            'title',
+            'author',
+            'copyright date',
+            'publisher code'
+        );
+        my $tsv = join( "\t", @columns ) . "\n";
 
-        while (my @row = $sth->fetchrow_array) {
-            $tsv .= join("\t", @row) . "\n";
+        while ( my @row = $sth->fetchrow_array ) {
+            $tsv .= join( "\t", @row ) . "\n";
         }
 
         return $c->render( status => 200, format => "text", text => $tsv );
-    } catch {
+    }
+    catch {
         warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
@@ -180,15 +198,41 @@ FROM   items i
         my $sth = $dbh->prepare($query);
         $sth->execute();
 
-        my @columns = ( 'item number', 'barcode', 'biblio number', 'isbn', 'collection code', 'item type', 'holding branch','home branch', 'cfull number', 'location', 'date accessioned', 'not for loan', 'damaged', 'item lost', 'withdrawn', 'to branch', 'found', 'date last borrowed', 'due date',  'ytd', 'lifetime circs', 'last inventoried date', 'last item update', 'last status change date' );
-        my $tsv = join("\t", @columns) . "\n";
+        my @columns = (
+            'item number',
+            'barcode',
+            'biblio number',
+            'isbn',
+            'collection code',
+            'item type',
+            'holding branch',
+            'home branch',
+            'cfull number',
+            'location',
+            'date accessioned',
+            'not for loan',
+            'damaged',
+            'item lost',
+            'withdrawn',
+            'to branch',
+            'found',
+            'date last borrowed',
+            'due date',
+            'ytd',
+            'lifetime circs',
+            'last inventoried date',
+            'last item update',
+            'last status change date'
+        );
+        my $tsv = join( "\t", @columns ) . "\n";
 
-        while (my @row = $sth->fetchrow_array) {
-            $tsv .= join("\t", @row) . "\n";
+        while ( my @row = $sth->fetchrow_array ) {
+            $tsv .= join( "\t", @row ) . "\n";
         }
 
         return $c->render( status => 200, format => "text", text => $tsv );
-    } catch {
+    }
+    catch {
         warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
@@ -272,22 +316,49 @@ WHERE  i.timestamp > Now() - INTERVAL 3 day
         my $sth = $dbh->prepare($query);
         $sth->execute();
 
-        my @columns = ( 'item number', 'barcode', 'biblio number', 'isbn', 'collection code', 'item type', 'holding branch','home branch', 'cfull number', 'location', 'date accessioned', 'not for loan', 'damaged', 'item lost', 'withdrawn', 'to branch', 'found', 'date last borrowed', 'due date',  'ytd', 'lifetime circs', 'last inventoried date', 'last item update', 'last status change date' );
-        my $tsv = join("\t", @columns) . "\n";
+        my @columns = (
+            'item number',
+            'barcode',
+            'biblio number',
+            'isbn',
+            'collection code',
+            'item type',
+            'holding branch',
+            'home branch',
+            'cfull number',
+            'location',
+            'date accessioned',
+            'not for loan',
+            'damaged',
+            'item lost',
+            'withdrawn',
+            'to branch',
+            'found',
+            'date last borrowed',
+            'due date',
+            'ytd',
+            'lifetime circs',
+            'last inventoried date',
+            'last item update',
+            'last status change date'
+        );
+        my $tsv = join( "\t", @columns ) . "\n";
 
-        while (my @row = $sth->fetchrow_array) {
-            $tsv .= join("\t", @row) . "\n";
+        while ( my @row = $sth->fetchrow_array ) {
+            $tsv .= join( "\t", @row ) . "\n";
         }
 
         return $c->render( status => 200, format => "text", text => $tsv );
-    } catch {
+    }
+    catch {
         warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
 
 sub circulation_full {
-    warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::circulation_full";
+    warn
+      "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::circulation_full";
     my $c = shift->openapi->valid_input or return;
 
     return try {
@@ -310,22 +381,27 @@ WHERE  type IN ( 'issue', 'renew' )
         my $sth = $dbh->prepare($query);
         $sth->execute();
 
-        my @columns = ( 'item number', 'barcode', 'biblio number',  'datetime', 'branch', 'patron id' );
-        my $tsv = join("\t", @columns) . "\n";
+        my @columns = (
+            'item number', 'barcode', 'biblio number', 'datetime',
+            'branch',      'patron id'
+        );
+        my $tsv = join( "\t", @columns ) . "\n";
 
-        while (my @row = $sth->fetchrow_array) {
-            $tsv .= join("\t", @row) . "\n";
+        while ( my @row = $sth->fetchrow_array ) {
+            $tsv .= join( "\t", @row ) . "\n";
         }
 
         return $c->render( status => 200, format => "text", text => $tsv );
-    } catch {
+    }
+    catch {
         warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
 
 sub circulation_delta {
-    warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::circulation_delta";
+    warn
+      "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::circulation_delta";
     my $c = shift->openapi->valid_input or return;
 
     return try {
@@ -348,15 +424,19 @@ WHERE  type IN ( 'issue', 'renew' )
         my $sth = $dbh->prepare($query);
         $sth->execute();
 
-        my @columns = ( 'item number', 'barcode', 'biblio number',  'datetime', 'branch', 'patron id' );
-        my $tsv = join("\t", @columns) . "\n";
+        my @columns = (
+            'item number', 'barcode', 'biblio number', 'datetime',
+            'branch',      'patron id'
+        );
+        my $tsv = join( "\t", @columns ) . "\n";
 
-        while (my @row = $sth->fetchrow_array) {
-            $tsv .= join("\t", @row) . "\n";
+        while ( my @row = $sth->fetchrow_array ) {
+            $tsv .= join( "\t", @row ) . "\n";
         }
 
         return $c->render( status => 200, format => "text", text => $tsv );
-    } catch {
+    }
+    catch {
         warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
@@ -384,15 +464,32 @@ WHERE address <> '' AND city <> '' AND state <> '' AND zipcode <> ''
         my $sth = $dbh->prepare($query);
         $sth->execute();
 
-        my @columns = ( 'patron id', 'expiration date', 'branch code', 'ytd year count', 'previous year count', 'lifetime count', 'last activity date', 'last checkout date', 'registration date', 'street one', 'city', 'state', 'zip', 'patron code', 'patron type' );
-        my $tsv = join("\t", @columns) . "\n";
+        my @columns = (
+            'patron id',
+            'expiration date',
+            'branch code',
+            'ytd year count',
+            'previous year count',
+            'lifetime count',
+            'last activity date',
+            'last checkout date',
+            'registration date',
+            'street one',
+            'city',
+            'state',
+            'zip',
+            'patron code',
+            'patron type'
+        );
+        my $tsv = join( "\t", @columns ) . "\n";
 
-        while (my @row = $sth->fetchrow_array) {
-            $tsv .= join("\t", @row) . "\n";
+        while ( my @row = $sth->fetchrow_array ) {
+            $tsv .= join( "\t", @row ) . "\n";
         }
 
         return $c->render( status => 200, format => "text", text => $tsv );
-    } catch {
+    }
+    catch {
         warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
@@ -420,15 +517,32 @@ WHERE address <> '' AND city <> '' AND state <> '' AND zipcode <> '' AND (DATE(b
         my $sth = $dbh->prepare($query);
         $sth->execute();
 
-        my @columns = ( 'patron id', 'expiration date', 'branch code', 'ytd year count', 'previous year count', 'lifetime count', 'last activity date', 'last checkout date', 'registration date', 'street one', 'city', 'state', 'zip', 'patron code', 'patron type' );
-        my $tsv = join("\t", @columns) . "\n";
+        my @columns = (
+            'patron id',
+            'expiration date',
+            'branch code',
+            'ytd year count',
+            'previous year count',
+            'lifetime count',
+            'last activity date',
+            'last checkout date',
+            'registration date',
+            'street one',
+            'city',
+            'state',
+            'zip',
+            'patron code',
+            'patron type'
+        );
+        my $tsv = join( "\t", @columns ) . "\n";
 
-        while (my @row = $sth->fetchrow_array) {
-            $tsv .= join("\t", @row) . "\n";
+        while ( my @row = $sth->fetchrow_array ) {
+            $tsv .= join( "\t", @row ) . "\n";
         }
 
         return $c->render( status => 200, format => "text", text => $tsv );
-    } catch {
+    }
+    catch {
         warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
@@ -458,22 +572,25 @@ GROUP  BY biblionumber,
         my $sth = $dbh->prepare($query);
         $sth->execute();
 
-        my @columns = ( 'biblio number', 'branch code', 'count', 'report date' );
-        my $tsv = join("\t", @columns) . "\n";
+        my @columns =
+          ( 'biblio number', 'branch code', 'count', 'report date' );
+        my $tsv = join( "\t", @columns ) . "\n";
 
-        while (my @row = $sth->fetchrow_array) {
-            $tsv .= join("\t", @row) . "\n";
+        while ( my @row = $sth->fetchrow_array ) {
+            $tsv .= join( "\t", @row ) . "\n";
         }
 
         return $c->render( status => 200, format => "text", text => $tsv );
-    } catch {
+    }
+    catch {
         warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
 
 sub circulation_in_house_full {
-    warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::circulation_in_house_full";
+    warn
+"Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::circulation_in_house_full";
     my $c = shift->openapi->valid_input or return;
 
     return try {
@@ -496,22 +613,27 @@ WHERE  type = 'localuse'
         my $sth = $dbh->prepare($query);
         $sth->execute();
 
-        my @columns = ( 'item number', 'barcode', 'biblio number',  'datetime', 'branch', 'patron id' );
-        my $tsv = join("\t", @columns) . "\n";
+        my @columns = (
+            'item number', 'barcode', 'biblio number', 'datetime',
+            'branch',      'patron id'
+        );
+        my $tsv = join( "\t", @columns ) . "\n";
 
-        while (my @row = $sth->fetchrow_array) {
-            $tsv .= join("\t", @row) . "\n";
+        while ( my @row = $sth->fetchrow_array ) {
+            $tsv .= join( "\t", @row ) . "\n";
         }
 
         return $c->render( status => 200, format => "text", text => $tsv );
-    } catch {
+    }
+    catch {
         warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
 
 sub circulation_in_house_delta {
-    warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::circulation_in_house_delta";
+    warn
+"Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::circulation_in_house_delta";
     my $c = shift->openapi->valid_input or return;
 
     return try {
@@ -534,22 +656,27 @@ WHERE  type = 'localuse'
         my $sth = $dbh->prepare($query);
         $sth->execute();
 
-        my @columns = ( 'item number', 'barcode', 'biblio number',  'datetime', 'branch', 'patron id' );
-        my $tsv = join("\t", @columns) . "\n";
+        my @columns = (
+            'item number', 'barcode', 'biblio number', 'datetime',
+            'branch',      'patron id'
+        );
+        my $tsv = join( "\t", @columns ) . "\n";
 
-        while (my @row = $sth->fetchrow_array) {
-            $tsv .= join("\t", @row) . "\n";
+        while ( my @row = $sth->fetchrow_array ) {
+            $tsv .= join( "\t", @row ) . "\n";
         }
 
         return $c->render( status => 200, format => "text", text => $tsv );
-    } catch {
+    }
+    catch {
         warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
 
 sub requested_holds_full {
-    warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::requested_holds_full";
+    warn
+"Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::requested_holds_full";
     my $c = shift->openapi->valid_input or return;
 
     return try {
@@ -586,22 +713,28 @@ SELECT
         my $sth = $dbh->prepare($query);
         $sth->execute();
 
-        my @columns = ( 'BibliographicRecordID', 'HoldRequestID', 'pickupLocation', 'RequestedDate', 'ReportDate' );
-        my $tsv = join("\t", @columns) . "\n";
+        my @columns = (
+            'BibliographicRecordID', 'HoldRequestID',
+            'pickupLocation',        'RequestedDate',
+            'ReportDate'
+        );
+        my $tsv = join( "\t", @columns ) . "\n";
 
-        while (my @row = $sth->fetchrow_array) {
-            $tsv .= join("\t", @row) . "\n";
+        while ( my @row = $sth->fetchrow_array ) {
+            $tsv .= join( "\t", @row ) . "\n";
         }
 
         return $c->render( status => 200, format => "text", text => $tsv );
-    } catch {
+    }
+    catch {
         warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
 
 sub requested_holds_delta {
-    warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::requested_holds_delta";
+    warn
+"Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::requested_holds_delta";
     my $c = shift->openapi->valid_input or return;
 
     return try {
@@ -638,22 +771,28 @@ SELECT
         my $sth = $dbh->prepare($query);
         $sth->execute();
 
-        my @columns = ( 'BibliographicRecordID', 'HoldRequestID', 'pickupLocation', 'RequestedDate', 'ReportDate' );
-        my $tsv = join("\t", @columns) . "\n";
+        my @columns = (
+            'BibliographicRecordID', 'HoldRequestID',
+            'pickupLocation',        'RequestedDate',
+            'ReportDate'
+        );
+        my $tsv = join( "\t", @columns ) . "\n";
 
-        while (my @row = $sth->fetchrow_array) {
-            $tsv .= join("\t", @row) . "\n";
+        while ( my @row = $sth->fetchrow_array ) {
+            $tsv .= join( "\t", @row ) . "\n";
         }
 
         return $c->render( status => 200, format => "text", text => $tsv );
-    } catch {
+    }
+    catch {
         warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
 
 sub fulfilled_holds_full {
-    warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::fulfilled_holds_full";
+    warn
+"Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::fulfilled_holds_full";
     my $c = shift->openapi->valid_input or return;
 
     return try {
@@ -684,22 +823,28 @@ SELECT
         my $sth = $dbh->prepare($query);
         $sth->execute();
 
-        my @columns = ( 'BibliographicRecordID', 'HoldRequestID', 'pickupLocation', 'FulfilledDate', 'ReportDate' );
-        my $tsv = join("\t", @columns) . "\n";
+        my @columns = (
+            'BibliographicRecordID', 'HoldRequestID',
+            'pickupLocation',        'FulfilledDate',
+            'ReportDate'
+        );
+        my $tsv = join( "\t", @columns ) . "\n";
 
-        while (my @row = $sth->fetchrow_array) {
-            $tsv .= join("\t", @row) . "\n";
+        while ( my @row = $sth->fetchrow_array ) {
+            $tsv .= join( "\t", @row ) . "\n";
         }
 
         return $c->render( status => 200, format => "text", text => $tsv );
-    } catch {
+    }
+    catch {
         warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
 
 sub fulfilled_holds_delta {
-    warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::fulfilled_holds_delta";
+    warn
+"Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::fulfilled_holds_delta";
     my $c = shift->openapi->valid_input or return;
 
     return try {
@@ -730,22 +875,28 @@ SELECT
         my $sth = $dbh->prepare($query);
         $sth->execute();
 
-        my @columns = ( 'BibliographicRecordID', 'HoldRequestID', 'pickupLocation', 'FulfilledDate', 'ReportDate' );
-        my $tsv = join("\t", @columns) . "\n";
+        my @columns = (
+            'BibliographicRecordID', 'HoldRequestID',
+            'pickupLocation',        'FulfilledDate',
+            'ReportDate'
+        );
+        my $tsv = join( "\t", @columns ) . "\n";
 
-        while (my @row = $sth->fetchrow_array) {
-            $tsv .= join("\t", @row) . "\n";
+        while ( my @row = $sth->fetchrow_array ) {
+            $tsv .= join( "\t", @row ) . "\n";
         }
 
         return $c->render( status => 200, format => "text", text => $tsv );
-    } catch {
+    }
+    catch {
         warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
 
 sub unfilled_holds_full {
-    warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::unfilled_holds_full";
+    warn
+"Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::unfilled_holds_full";
     my $c = shift->openapi->valid_input or return;
 
     return try {
@@ -768,39 +919,44 @@ SELECT
         my $sth = $dbh->prepare($query);
         $sth->execute();
 
-        my @columns = ( 'BibliographicRecordID', 'HoldRequestID', 'RequestedDate', 'RequestedPickupLocation' );
-        my $tsv = join("\t", @columns) . "\n";
+        my @columns = (
+            'BibliographicRecordID', 'HoldRequestID',
+            'RequestedDate',         'RequestedPickupLocation'
+        );
+        my $tsv = join( "\t", @columns ) . "\n";
 
-        while (my @row = $sth->fetchrow_array) {
-            $tsv .= join("\t", @row) . "\n";
+        while ( my @row = $sth->fetchrow_array ) {
+            $tsv .= join( "\t", @row ) . "\n";
         }
 
         return $c->render( status => 200, format => "text", text => $tsv );
-    } catch {
+    }
+    catch {
         warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
 }
 
 sub _get_title_template {
-    my $plugin = Koha::Plugin::Com::ByWaterSolutions::LibraryIQ->new();
+    my $plugin         = Koha::Plugin::Com::ByWaterSolutions::LibraryIQ->new();
     my $title_template = $plugin->retrieve_data('title_template');
 
     return $title_template;
 }
 
 sub _generate_title_template_sql {
-    my ( $title_template ) = @_;
+    my ($title_template) = @_;
 
-    my @marc_fields = split(",", $title_template);
+    my @marc_fields = split( ",", $title_template );
 
     my $sql = q{
         CONCAT_WS(' ',
     };
 
     foreach my $marc_field (@marc_fields) {
-        my ( $field, $subfield ) = split('$', $marc_field);
-            $sql .= qq{ExtractValue(bm.metadata, '//datafield[\@tag="$field"]/subfield[\@code="$subfield"]'),
+        my ( $field, $subfield ) = split( '$', $marc_field );
+        $sql .=
+qq{ExtractValue(bm.metadata, '//datafield[\@tag="$field"]/subfield[\@code="$subfield"]'),
         };
     }
 
@@ -814,9 +970,10 @@ sub _generate_title_template_sql {
 sub _get_title_sql {
     my $title_template = _get_title_template();
 
-    if ( $title_template ) {
+    if ($title_template) {
         return _generate_title_template_sql($title_template);
-    } else {
+    }
+    else {
         return q{
             biblio.title AS title
         };
