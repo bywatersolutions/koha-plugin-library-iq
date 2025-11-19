@@ -43,6 +43,8 @@ SELECT b.biblionumber,
 FROM   biblio b
        JOIN biblioitems bi
          ON bi.biblionumber = b.biblionumber  
+       JOIN biblio_metadata bm
+         ON bm.biblionumber = b.biblionumber
         };
 
         my $dbh = C4::Context->dbh;
@@ -949,20 +951,19 @@ sub _generate_title_template_sql {
 
     my @marc_fields = split( ",", $title_template );
 
-    my $sql = q{
-        CONCAT_WS(' ',
-    };
-
+    my @parts;
     foreach my $marc_field (@marc_fields) {
-        my ( $field, $subfield ) = split( '$', $marc_field );
-        $sql .=
-qq{ExtractValue(bm.metadata, '//datafield[\@tag="$field"]/subfield[\@code="$subfield"]'),
-        };
+        my ( $field, $subfield ) = split( /\$/, $marc_field );
+        push(
+            @parts, qq{
+            ExtractValue(bm.metadata, '//datafield[\@tag="$field"]/subfield[\@code="$subfield"]')
+        }
+        );
     }
 
-    my $sql .= q{
-       ) AS title
-    };
+    my $parts = join( ',', @parts );
+
+    my $sql = qq{ CONCAT_WS(" ", $parts ) AS title };
 
     return $sql;
 }
@@ -974,9 +975,7 @@ sub _get_title_sql {
         return _generate_title_template_sql($title_template);
     }
     else {
-        return q{
-            biblio.title AS title
-        };
+        return q{ title };
     }
 }
 
