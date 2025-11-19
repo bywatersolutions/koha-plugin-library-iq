@@ -30,12 +30,13 @@ sub records_full {
     my $c = shift->openapi->valid_input or return;
 
     return try {
+        my $title_sql = _get_title_sql();
 
-        my $query = q{
+        my $query = qq{
 SELECT b.biblionumber,
        bi.isbn,
        bi.itemtype,
-       b.title,
+       $title_sql,
        b.author,
        copyrightdate,
        publishercode
@@ -66,13 +67,15 @@ sub records_delta {
     warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::records_delta";
     my $c = shift->openapi->valid_input or return;
 
+    my $title_sql = _get_title_sql();
+
     return try {
 
-        my $query = q{
+        my $query = qq{
 SELECT b.biblionumber,
        bi.isbn,
        bi.itemtype,
-       b.title,
+       $title_sql,
        b.author,
        copyrightdate,
        publishercode
@@ -777,6 +780,47 @@ SELECT
         warn "LibraryIQ Plugin ERROR: $_";
         $c->unhandled_exception($_);
     };
+}
+
+sub _get_title_template {
+    my $plugin = Koha::Plugin::Com::ByWaterSolutions::LibraryIQ->new();
+    my $title_template = $plugin->retrieve_data('title_template');
+
+    return $title_template;
+}
+
+sub _generate_title_template_sql {
+    my ( $title_template ) = @_;
+
+    my @marc_fields = split(",", $title_template);
+
+    my $sql = q{
+        CONCAT_WS(' ',
+    };
+
+    foreach my $marc_field (@marc_fields) {
+        my ( $field, $subfield ) = split('$', $marc_field);
+            $sql .= qq{ExtractValue(bm.metadata, '//datafield[\@tag="$field"]/subfield[\@code="$subfield"]'),
+        };
+    }
+
+    my $sql .= q{
+       ) AS title
+    };
+
+    return $sql;
+}
+
+sub _get_title_sql {
+    my $title_template = _get_title_template();
+
+    if ( $title_template ) {
+        return _generate_title_template_sql($title_template);
+    } else {
+        return q{
+            biblio.title AS title
+        };
+    }
 }
 
 1;

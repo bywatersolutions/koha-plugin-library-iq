@@ -22,11 +22,12 @@ our $metadata = {
     minimum_version => $MINIMUM_VERSION,
     maximum_version => undef,
     version         => $VERSION,
-    description     => 'This plugin adds APIs needed for integration with LibraryIQ',
+    description     =>
+      'This plugin adds APIs needed for integration with LibraryIQ',
 };
 
 sub new {
-    my ($class, $args) = @_;
+    my ( $class, $args ) = @_;
 
     ## We need to add our metadata here so our base class can access it
     $args->{'metadata'} = $metadata;
@@ -41,14 +42,16 @@ sub new {
 }
 
 sub install() {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
 
-    C4::Context->dbh->do(q{
+    C4::Context->dbh->do(
+        q{
         ALTER TABLE `statistics`
           ADD KEY `idx_liq_borrowernumber` (`borrowernumber`),
           ADD KEY `idx_liq_itemnumber` (`itemnumber`),
           ADD KEY `idx_liq_stats_borrower_type_date` (`borrowernumber`,`type`,`datetime`);
-    });
+    }
+    );
 
     return 1;
 }
@@ -56,24 +59,48 @@ sub install() {
 sub cronjob_nightly {
     my ($self) = @_;
 
-    C4::Context->dbh->do(q{
+    C4::Context->dbh->do(
+        q{
         ALTER TABLE `statistics`
           ADD KEY `idx_liq_borrowernumber` (`borrowernumber`),
           ADD KEY `idx_liq_itemnumber` (`itemnumber`),
           ADD KEY `idx_liq_stats_borrower_type_date` (`borrowernumber`,`type`,`datetime`);
-    });
+        }
+    );
 
     return 1;
 }
 
 sub uninstall() {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
 
     return 1;
 }
 
+sub configure {
+    my ( $self, $args ) = @_;
+    my $cgi = $self->{'cgi'};
+
+    unless ( $cgi->param('save') ) {
+        my $template = $self->get_template( { file => 'configure.tt' } );
+
+        $template->param(
+            title_template => $self->retrieve_data('title_template'), );
+
+        $self->output_html( $template->output() );
+    }
+    else {
+        $self->store_data(
+            {
+                title_template => $cgi->param('title_template'),
+            }
+        );
+        $self->go_home();
+    }
+}
+
 sub api_routes {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
 
     my $spec_str = $self->mbf_read('openapi.json');
     my $spec     = decode_json($spec_str);
