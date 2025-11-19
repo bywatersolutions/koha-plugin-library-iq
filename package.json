@@ -1,0 +1,30 @@
+{
+  "name": "koha-plugin-library-iq",
+  "version": "2.6.3",
+  "description": "Koha Library IQ Plugin",
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-cli": "^3.0.0",
+    "vinyl": "^3.0.0"
+  },
+  "scripts": {
+    "preversion": "sed -i -e \"s/^our \\$VERSION = .*/our \\$VERSION = \\\"$npm_new_version\\\";/\" Koha/Plugin/Com/ByWaterSolutions/LibraryIQ.pm; git add -u; rm -f Koha/Plugin/Com/ByWaterSolutions/LibraryIQ.pm-e",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "kpz": "node -e \"console.log(process.env.npm_package_name + '-v' + process.env.npm_package_version + '.kpz')\"",
+    "print-name": "node -e \"console.log(process.env.npm_package_name)\"",
+    "build": "gulp build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bywatersolutions/koha-plugin-library-iq.git"
+  },
+  "author": "Kyle M Hall <kyle@bywatersolutions.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/bywatersolutions/koha-plugin-library-iq/issues"
+  },
+  "homepage": "https://github.com/bywatersolutions/koha-plugin-library-iq#readme",
+  "dependencies": {
+    "node-datetime": "^2.0.0"
+  }
+}
