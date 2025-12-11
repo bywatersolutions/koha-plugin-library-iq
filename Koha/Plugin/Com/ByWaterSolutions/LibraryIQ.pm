@@ -8,6 +8,7 @@ use C4::Auth;
 use C4::Context;
 
 use JSON qw( decode_json );
+use Try::Tiny;
 
 ## Here we set our plugin version
 our $VERSION         = "{VERSION}";
@@ -44,14 +45,16 @@ sub new {
 sub install() {
     my ( $self, $args ) = @_;
 
-    C4::Context->dbh->do(
-        q{
-        ALTER TABLE `statistics`
-          ADD KEY `idx_liq_borrowernumber` (`borrowernumber`),
-          ADD KEY `idx_liq_itemnumber` (`itemnumber`),
-          ADD KEY `idx_liq_stats_borrower_type_date` (`borrowernumber`,`type`,`datetime`);
-    }
-    );
+    try {
+        C4::Context->dbh->do(
+            q{
+            ALTER TABLE `statistics`
+              ADD KEY `idx_liq_borrowernumber` (`borrowernumber`),
+              ADD KEY `idx_liq_itemnumber` (`itemnumber`),
+              ADD KEY `idx_liq_stats_borrower_type_date` (`borrowernumber`,`type`,`datetime`);
+        }
+        );
+    };
 
     return 1;
 }
@@ -59,14 +62,16 @@ sub install() {
 sub cronjob_nightly {
     my ($self) = @_;
 
-    C4::Context->dbh->do(
-        q{
-        ALTER TABLE `statistics`
-          ADD KEY `idx_liq_borrowernumber` (`borrowernumber`),
-          ADD KEY `idx_liq_itemnumber` (`itemnumber`),
-          ADD KEY `idx_liq_stats_borrower_type_date` (`borrowernumber`,`type`,`datetime`);
+    try {
+        C4::Context->dbh->do(
+            q{
+            ALTER TABLE `statistics`
+              ADD KEY `idx_liq_borrowernumber` (`borrowernumber`),
+              ADD KEY `idx_liq_itemnumber` (`itemnumber`),
+              ADD KEY `idx_liq_stats_borrower_type_date` (`borrowernumber`,`type`,`datetime`);
         }
-    );
+        );
+    };
 
     return 1;
 }
