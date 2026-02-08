@@ -55,7 +55,7 @@ FROM   biblio b
             $query .= " LIMIT ?";
             push @bind_params, $limit;
         }
-        if (defined $offset && $offset > 0) {
+        if (@bind_params && defined $offset && $offset > 0) {
             $query .= " OFFSET ?";
             push @bind_params, $offset;
         }
@@ -117,7 +117,7 @@ WHERE  b.timestamp > Now() - INTERVAL 3 day
             $query .= " LIMIT ?";
             push @bind_params, $limit;
         }
-        if (defined $offset && $offset > 0) {
+        if (@bind_params && defined $offset && $offset > 0) {
             $query .= " OFFSET ?";
             push @bind_params, $offset;
         }
@@ -230,7 +230,7 @@ FROM   items i
             $query .= " LIMIT ?";
             push @bind_params, $limit;
         }
-        if (defined $offset && $offset > 0) {
+        if (@bind_params && defined $offset && $offset > 0) {
             $query .= " OFFSET ?";
             push @bind_params, $offset;
         }
@@ -356,18 +356,19 @@ FROM   items i
 WHERE  i.timestamp > Now() - INTERVAL 3 day  
         };
 
-        my $pagination = '';
+        my @bind_params = ();
         if (defined $limit && $limit > 0) {
-            $pagination = " LIMIT $limit";
-            if (defined $offset && $offset > 0) {
-                $pagination .= " OFFSET $offset";
-            }
+            $query .= " LIMIT ?";
+            push @bind_params, $limit;
         }
-        $query .= $pagination;
+        if (@bind_params && defined $offset && $offset > 0) {
+            $query .= " OFFSET ?";
+            push @bind_params, $offset;
+        }
 
         my $dbh = C4::Context->dbh;
         my $sth = $dbh->prepare($query);
-        $sth->execute();
+        $sth->execute(@bind_params);
 
         my @columns = (
             'item number',
@@ -433,18 +434,19 @@ WHERE  type IN ( 'issue', 'renew' )
        AND s.datetime > Now() - INTERVAL 2 year  
         };
 
-        my $pagination = '';
+        my @bind_params = ();
         if (defined $limit && $limit > 0) {
-            $pagination = " LIMIT $limit";
-            if (defined $offset && $offset > 0) {
-                $pagination .= " OFFSET $offset";
-            }
+            $query .= " LIMIT ?";
+            push @bind_params, $limit;
         }
-        $query .= $pagination;
+        if (@bind_params && defined $offset && $offset > 0) {
+            $query .= " OFFSET ?";
+            push @bind_params, $offset;
+        }
 
         my $dbh = C4::Context->dbh;
         my $sth = $dbh->prepare($query);
-        $sth->execute();
+        $sth->execute(@bind_params);
 
         my @columns = (
             'item number', 'barcode', 'biblio number', 'datetime',
@@ -488,18 +490,19 @@ WHERE  type IN ( 'issue', 'renew' )
        AND s.datetime > Now() - INTERVAL 3 day
         };
 
-        my $pagination = '';
+        my @bind_params = ();
         if (defined $limit && $limit > 0) {
-            $pagination = " LIMIT $limit";
-            if (defined $offset && $offset > 0) {
-                $pagination .= " OFFSET $offset";
-            }
+            $query .= " LIMIT ?";
+            push @bind_params, $limit;
         }
-        $query .= $pagination;
+        if (@bind_params && defined $offset && $offset > 0) {
+            $query .= " OFFSET ?";
+            push @bind_params, $offset;
+        }
 
         my $dbh = C4::Context->dbh;
         my $sth = $dbh->prepare($query);
-        $sth->execute();
+        $sth->execute(@bind_params);
 
         my @columns = (
             'item number', 'barcode', 'biblio number', 'datetime',
@@ -545,7 +548,7 @@ WHERE address <> '' AND city <> '' AND state <> '' AND zipcode <> ''
             $query .= " LIMIT ?";
             push @bind_params, $limit;
         }
-        if (defined $offset && $offset > 0) {
+        if (@bind_params && defined $offset && $offset > 0) {
             $query .= " OFFSET ?";
             push @bind_params, $offset;
         }
@@ -611,7 +614,7 @@ WHERE address <> '' AND city <> '' AND state <> '' AND zipcode <> '' AND (DATE(b
             $query .= " LIMIT ?";
             push @bind_params, $limit;
         }
-        if (defined $offset && $offset > 0) {
+        if (@bind_params && defined $offset && $offset > 0) {
             $query .= " OFFSET ?";
             push @bind_params, $offset;
         }
@@ -679,7 +682,7 @@ GROUP  BY biblionumber,
             $query .= " LIMIT ?";
             push @bind_params, $limit;
         }
-        if (defined $offset && $offset > 0) {
+        if (@bind_params && defined $offset && $offset > 0) {
             $query .= " OFFSET ?";
             push @bind_params, $offset;
         }
@@ -733,7 +736,7 @@ WHERE  type = 'localuse'
             $query .= " LIMIT ?";
             push @bind_params, $limit;
         }
-        if (defined $offset && $offset > 0) {
+        if (@bind_params && defined $offset && $offset > 0) {
             $query .= " OFFSET ?";
             push @bind_params, $offset;
         }
@@ -789,7 +792,7 @@ WHERE  type = 'localuse'
             $query .= " LIMIT ?";
             push @bind_params, $limit;
         }
-        if (defined $offset && $offset > 0) {
+        if (@bind_params && defined $offset && $offset > 0) {
             $query .= " OFFSET ?";
             push @bind_params, $offset;
         }
@@ -859,7 +862,7 @@ SELECT
             $query .= " LIMIT ?";
             push @bind_params, $limit;
         }
-        if (defined $offset && $offset > 0) {
+        if (@bind_params && defined $offset && $offset > 0) {
             $query .= " OFFSET ?";
             push @bind_params, $offset;
         }
@@ -930,7 +933,7 @@ SELECT
             $query .= " LIMIT ?";
             push @bind_params, $limit;
         }
-        if (defined $offset && $offset > 0) {
+        if (@bind_params && defined $offset && $offset > 0) {
             $query .= " OFFSET ?";
             push @bind_params, $offset;
         }
@@ -995,7 +998,7 @@ SELECT
             $query .= " LIMIT ?";
             push @bind_params, $limit;
         }
-        if (defined $offset && $offset > 0) {
+        if (@bind_params && defined $offset && $offset > 0) {
             $query .= " OFFSET ?";
             push @bind_params, $offset;
         }
@@ -1060,7 +1063,7 @@ SELECT
             $query .= " LIMIT ?";
             push @bind_params, $limit;
         }
-        if (defined $offset && $offset > 0) {
+        if (@bind_params && defined $offset && $offset > 0) {
             $query .= " OFFSET ?";
             push @bind_params, $offset;
         }
@@ -1117,7 +1120,7 @@ SELECT
             $query .= " LIMIT ?";
             push @bind_params, $limit;
         }
-        if (defined $offset && $offset > 0) {
+        if (@bind_params && defined $offset && $offset > 0) {
             $query .= " OFFSET ?";
             push @bind_params, $offset;
         }

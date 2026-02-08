@@ -44,3 +44,5 @@ The API supports pagination using the `limit` and `offset` query parameters. For
 
 - `limit=10` - Limits the number of records returned to 10
 - `offset=20` - Skips the first 20 records
+
+The parameter `offset` will be ignored if `limit` is not provided.
