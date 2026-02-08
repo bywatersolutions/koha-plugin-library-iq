@@ -29,6 +29,9 @@ sub records_full {
     warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::records_full";
     my $c = shift->openapi->valid_input or return;
 
+    my $limit = $c->param('limit');
+    my $offset = $c->param('offset');
+
     return try {
         my $title_sql = _get_title_sql();
 
@@ -47,9 +50,19 @@ FROM   biblio b
          ON bm.biblionumber = b.biblionumber
         };
 
+        my @bind_params = ();
+        if (defined $limit && $limit > 0) {
+            $query .= " LIMIT ?";
+            push @bind_params, $limit;
+        }
+        if (defined $offset && $offset > 0) {
+            $query .= " OFFSET ?";
+            push @bind_params, $offset;
+        }
+
         my $dbh = C4::Context->dbh;
         my $sth = $dbh->prepare($query);
-        $sth->execute();
+        $sth->execute(@bind_params);
 
         my @columns = (
             'biblio number',
@@ -78,6 +91,9 @@ sub records_delta {
     warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::records_delta";
     my $c = shift->openapi->valid_input or return;
 
+    my $limit = $c->param('limit');
+    my $offset = $c->param('offset');
+
     my $title_sql = _get_title_sql();
 
     return try {
@@ -96,9 +112,19 @@ FROM   biblio b
 WHERE  b.timestamp > Now() - INTERVAL 3 day  
         };
 
+        my @bind_params = ();
+        if (defined $limit && $limit > 0) {
+            $query .= " LIMIT ?";
+            push @bind_params, $limit;
+        }
+        if (defined $offset && $offset > 0) {
+            $query .= " OFFSET ?";
+            push @bind_params, $offset;
+        }
+
         my $dbh = C4::Context->dbh;
         my $sth = $dbh->prepare($query);
-        $sth->execute();
+        $sth->execute(@bind_params);
 
         my @columns = (
             'biblio number',
@@ -126,6 +152,9 @@ WHERE  b.timestamp > Now() - INTERVAL 3 day
 sub items_full {
     warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::items_full";
     my $c = shift->openapi->valid_input or return;
+
+    my $limit = $c->param('limit');
+    my $offset = $c->param('offset');
 
     return try {
 
@@ -196,9 +225,19 @@ FROM   items i
                  AND a2.category = 'LOC'  
         };
 
+        my @bind_params = ();
+        if (defined $limit && $limit > 0) {
+            $query .= " LIMIT ?";
+            push @bind_params, $limit;
+        }
+        if (defined $offset && $offset > 0) {
+            $query .= " OFFSET ?";
+            push @bind_params, $offset;
+        }
+
         my $dbh = C4::Context->dbh;
         my $sth = $dbh->prepare($query);
-        $sth->execute();
+        $sth->execute(@bind_params);
 
         my @columns = (
             'item number',
@@ -243,6 +282,9 @@ FROM   items i
 sub items_delta {
     warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::items_delta";
     my $c = shift->openapi->valid_input or return;
+
+    my $limit = $c->param('limit');
+    my $offset = $c->param('offset');
 
     return try {
 
@@ -314,6 +356,15 @@ FROM   items i
 WHERE  i.timestamp > Now() - INTERVAL 3 day  
         };
 
+        my $pagination = '';
+        if (defined $limit && $limit > 0) {
+            $pagination = " LIMIT $limit";
+            if (defined $offset && $offset > 0) {
+                $pagination .= " OFFSET $offset";
+            }
+        }
+        $query .= $pagination;
+
         my $dbh = C4::Context->dbh;
         my $sth = $dbh->prepare($query);
         $sth->execute();
@@ -363,6 +414,9 @@ sub circulation_full {
       "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::circulation_full";
     my $c = shift->openapi->valid_input or return;
 
+    my $limit = $c->param('limit');
+    my $offset = $c->param('offset');
+
     return try {
 
         my $query = q{
@@ -378,6 +432,15 @@ FROM   statistics s
 WHERE  type IN ( 'issue', 'renew' )
        AND s.datetime > Now() - INTERVAL 2 year  
         };
+
+        my $pagination = '';
+        if (defined $limit && $limit > 0) {
+            $pagination = " LIMIT $limit";
+            if (defined $offset && $offset > 0) {
+                $pagination .= " OFFSET $offset";
+            }
+        }
+        $query .= $pagination;
 
         my $dbh = C4::Context->dbh;
         my $sth = $dbh->prepare($query);
@@ -406,6 +469,9 @@ sub circulation_delta {
       "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::circulation_delta";
     my $c = shift->openapi->valid_input or return;
 
+    my $limit = $c->param('limit');
+    my $offset = $c->param('offset');
+
     return try {
 
         my $query = q{
@@ -421,6 +487,15 @@ FROM   statistics s
 WHERE  type IN ( 'issue', 'renew' )
        AND s.datetime > Now() - INTERVAL 3 day
         };
+
+        my $pagination = '';
+        if (defined $limit && $limit > 0) {
+            $pagination = " LIMIT $limit";
+            if (defined $offset && $offset > 0) {
+                $pagination .= " OFFSET $offset";
+            }
+        }
+        $query .= $pagination;
 
         my $dbh = C4::Context->dbh;
         my $sth = $dbh->prepare($query);
@@ -448,6 +523,9 @@ sub patrons_full {
     warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::patrons_full";
     my $c = shift->openapi->valid_input or return;
 
+    my $limit = $c->param('limit');
+    my $offset = $c->param('offset');
+
     return try {
 
         my $query = q{
@@ -462,9 +540,19 @@ JOIN categories c ON (b.categorycode = c.categorycode)
 WHERE address <> '' AND city <> '' AND state <> '' AND zipcode <> ''
         };
 
+        my @bind_params = ();
+        if (defined $limit && $limit > 0) {
+            $query .= " LIMIT ?";
+            push @bind_params, $limit;
+        }
+        if (defined $offset && $offset > 0) {
+            $query .= " OFFSET ?";
+            push @bind_params, $offset;
+        }
+
         my $dbh = C4::Context->dbh;
         my $sth = $dbh->prepare($query);
-        $sth->execute();
+        $sth->execute(@bind_params);
 
         my @columns = (
             'patron id',
@@ -501,6 +589,9 @@ sub patrons_delta {
     warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::patrons_delta";
     my $c = shift->openapi->valid_input or return;
 
+    my $limit = $c->param('limit');
+    my $offset = $c->param('offset');
+
     return try {
 
         my $query = q{
@@ -515,9 +606,19 @@ JOIN categories c ON (b.categorycode = c.categorycode)
 WHERE address <> '' AND city <> '' AND state <> '' AND zipcode <> '' AND (DATE(b.updated_on) >= DATE_SUB(CURDATE(), INTERVAL 3 DAY) OR DATE(b.lastseen) >= DATE_SUB(CURDATE(), INTERVAL 3 DAY) OR b.date_renewed >= DATE_SUB(CURDATE(), INTERVAL 3 DAY) OR b.dateenrolled >= DATE_SUB(CURDATE(), INTERVAL 3 DAY))
         };
 
+        my @bind_params = ();
+        if (defined $limit && $limit > 0) {
+            $query .= " LIMIT ?";
+            push @bind_params, $limit;
+        }
+        if (defined $offset && $offset > 0) {
+            $query .= " OFFSET ?";
+            push @bind_params, $offset;
+        }
+
         my $dbh = C4::Context->dbh;
         my $sth = $dbh->prepare($query);
-        $sth->execute();
+        $sth->execute(@bind_params);
 
         my @columns = (
             'patron id',
@@ -554,6 +655,9 @@ sub holds_delta {
     warn "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::holds_delta";
     my $c = shift->openapi->valid_input or return;
 
+    my $limit = $c->param('limit');
+    my $offset = $c->param('offset');
+
     return try {
 
         my $query = q{
@@ -570,9 +674,19 @@ GROUP  BY biblionumber,
           r.branchcode  
         };
 
+        my @bind_params = ();
+        if (defined $limit && $limit > 0) {
+            $query .= " LIMIT ?";
+            push @bind_params, $limit;
+        }
+        if (defined $offset && $offset > 0) {
+            $query .= " OFFSET ?";
+            push @bind_params, $offset;
+        }
+
         my $dbh = C4::Context->dbh;
         my $sth = $dbh->prepare($query);
-        $sth->execute();
+        $sth->execute(@bind_params);
 
         my @columns =
           ( 'biblio number', 'branch code', 'count', 'report date' );
@@ -595,6 +709,9 @@ sub circulation_in_house_full {
 "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::circulation_in_house_full";
     my $c = shift->openapi->valid_input or return;
 
+    my $limit = $c->param('limit');
+    my $offset = $c->param('offset');
+
     return try {
 
         my $query = q{
@@ -611,9 +728,19 @@ WHERE  type = 'localuse'
        AND s.datetime > Now() - INTERVAL 2 year  
         };
 
+        my @bind_params = ();
+        if (defined $limit && $limit > 0) {
+            $query .= " LIMIT ?";
+            push @bind_params, $limit;
+        }
+        if (defined $offset && $offset > 0) {
+            $query .= " OFFSET ?";
+            push @bind_params, $offset;
+        }
+
         my $dbh = C4::Context->dbh;
         my $sth = $dbh->prepare($query);
-        $sth->execute();
+        $sth->execute(@bind_params);
 
         my @columns = (
             'item number', 'barcode', 'biblio number', 'datetime',
@@ -638,6 +765,9 @@ sub circulation_in_house_delta {
 "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::circulation_in_house_delta";
     my $c = shift->openapi->valid_input or return;
 
+    my $limit = $c->param('limit');
+    my $offset = $c->param('offset');
+
     return try {
 
         my $query = q{
@@ -654,9 +784,19 @@ WHERE  type = 'localuse'
        AND s.datetime > Now() - INTERVAL 3 day  
         };
 
+        my @bind_params = ();
+        if (defined $limit && $limit > 0) {
+            $query .= " LIMIT ?";
+            push @bind_params, $limit;
+        }
+        if (defined $offset && $offset > 0) {
+            $query .= " OFFSET ?";
+            push @bind_params, $offset;
+        }
+
         my $dbh = C4::Context->dbh;
         my $sth = $dbh->prepare($query);
-        $sth->execute();
+        $sth->execute(@bind_params);
 
         my @columns = (
             'item number', 'barcode', 'biblio number', 'datetime',
@@ -680,6 +820,9 @@ sub requested_holds_full {
     warn
 "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::requested_holds_full";
     my $c = shift->openapi->valid_input or return;
+
+    my $limit = $c->param('limit');
+    my $offset = $c->param('offset');
 
     return try {
 
@@ -711,9 +854,19 @@ SELECT
         AND res.reservedate < Now()
         };
 
+        my @bind_params = ();
+        if (defined $limit && $limit > 0) {
+            $query .= " LIMIT ?";
+            push @bind_params, $limit;
+        }
+        if (defined $offset && $offset > 0) {
+            $query .= " OFFSET ?";
+            push @bind_params, $offset;
+        }
+
         my $dbh = C4::Context->dbh;
         my $sth = $dbh->prepare($query);
-        $sth->execute();
+        $sth->execute(@bind_params);
 
         my @columns = (
             'BibliographicRecordID', 'HoldRequestID',
@@ -738,6 +891,9 @@ sub requested_holds_delta {
     warn
 "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::requested_holds_delta";
     my $c = shift->openapi->valid_input or return;
+
+    my $limit = $c->param('limit');
+    my $offset = $c->param('offset');
 
     return try {
 
@@ -769,9 +925,19 @@ SELECT
         AND res.reservedate < Now()
         };
 
+        my @bind_params = ();
+        if (defined $limit && $limit > 0) {
+            $query .= " LIMIT ?";
+            push @bind_params, $limit;
+        }
+        if (defined $offset && $offset > 0) {
+            $query .= " OFFSET ?";
+            push @bind_params, $offset;
+        }
+
         my $dbh = C4::Context->dbh;
         my $sth = $dbh->prepare($query);
-        $sth->execute();
+        $sth->execute(@bind_params);
 
         my @columns = (
             'BibliographicRecordID', 'HoldRequestID',
@@ -797,6 +963,9 @@ sub fulfilled_holds_full {
 "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::fulfilled_holds_full";
     my $c = shift->openapi->valid_input or return;
 
+    my $limit = $c->param('limit');
+    my $offset = $c->param('offset');
+
     return try {
 
         my $query = q{
@@ -821,9 +990,19 @@ SELECT
         AND res.waitingdate < Now()
         };
 
+        my @bind_params = ();
+        if (defined $limit && $limit > 0) {
+            $query .= " LIMIT ?";
+            push @bind_params, $limit;
+        }
+        if (defined $offset && $offset > 0) {
+            $query .= " OFFSET ?";
+            push @bind_params, $offset;
+        }
+
         my $dbh = C4::Context->dbh;
         my $sth = $dbh->prepare($query);
-        $sth->execute();
+        $sth->execute(@bind_params);
 
         my @columns = (
             'BibliographicRecordID', 'HoldRequestID',
@@ -849,6 +1028,9 @@ sub fulfilled_holds_delta {
 "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::fulfilled_holds_delta";
     my $c = shift->openapi->valid_input or return;
 
+    my $limit = $c->param('limit');
+    my $offset = $c->param('offset');
+
     return try {
 
         my $query = q{
@@ -873,9 +1055,19 @@ SELECT
         AND res.waitingdate < Now()
         };
 
+        my @bind_params = ();
+        if (defined $limit && $limit > 0) {
+            $query .= " LIMIT ?";
+            push @bind_params, $limit;
+        }
+        if (defined $offset && $offset > 0) {
+            $query .= " OFFSET ?";
+            push @bind_params, $offset;
+        }
+
         my $dbh = C4::Context->dbh;
         my $sth = $dbh->prepare($query);
-        $sth->execute();
+        $sth->execute(@bind_params);
 
         my @columns = (
             'BibliographicRecordID', 'HoldRequestID',
@@ -901,6 +1093,9 @@ sub unfilled_holds_full {
 "Koha::Plugin::Com::ByWaterSolutions::LibraryIQ::API::unfilled_holds_full";
     my $c = shift->openapi->valid_input or return;
 
+    my $limit = $c->param('limit');
+    my $offset = $c->param('offset');
+
     return try {
 
         my $query = q{
@@ -917,9 +1112,19 @@ SELECT
     ORDER BY r.priority ASC
         };
 
+        my @bind_params = ();
+        if (defined $limit && $limit > 0) {
+            $query .= " LIMIT ?";
+            push @bind_params, $limit;
+        }
+        if (defined $offset && $offset > 0) {
+            $query .= " OFFSET ?";
+            push @bind_params, $offset;
+        }
+
         my $dbh = C4::Context->dbh;
         my $sth = $dbh->prepare($query);
-        $sth->execute();
+        $sth->execute(@bind_params);
 
         my @columns = (
             'BibliographicRecordID', 'HoldRequestID',
