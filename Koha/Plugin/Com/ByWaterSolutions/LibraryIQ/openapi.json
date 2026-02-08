@@ -6,6 +6,22 @@
             "tags": [
                 "records"
             ],
+            "parameters": [
+                {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "Limit the number of results",
+                    "required": false,
+                    "type": "integer"
+                },
+                {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "Offset the results",
+                    "required": false,
+                    "type": "integer"
+                }
+            ],
             "produces": [
                 "application/tsv"
             ],
@@ -39,6 +55,22 @@
             "operationId": "libraryIqGetRecordsDelta",
             "tags": [
                 "records"
+            ],
+            "parameters": [
+                {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "Limit the number of results",
+                    "required": false,
+                    "type": "integer"
+                },
+                {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "Offset the results",
+                    "required": false,
+                    "type": "integer"
+                }
             ],
             "produces": [
                 "application/tsv"
@@ -74,6 +106,22 @@
             "tags": [
                 "items"
             ],
+            "parameters": [
+                {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "Limit the number of results",
+                    "required": false,
+                    "type": "integer"
+                },
+                {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "Offset the results",
+                    "required": false,
+                    "type": "integer"
+                }
+            ],
             "produces": [
                 "application/tsv"
             ],
@@ -107,6 +155,22 @@
             "operationId": "libraryIqGetItemsDelta",
             "tags": [
                 "items"
+            ],
+            "parameters": [
+                {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "Limit the number of results",
+                    "required": false,
+                    "type": "integer"
+                },
+                {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "Offset the results",
+                    "required": false,
+                    "type": "integer"
+                }
             ],
             "produces": [
                 "application/tsv"
@@ -142,6 +206,22 @@
             "tags": [
                 "circulation"
             ],
+            "parameters": [
+                {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "Limit the number of results",
+                    "required": false,
+                    "type": "integer"
+                },
+                {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "Offset the results",
+                    "required": false,
+                    "type": "integer"
+                }
+            ],
             "produces": [
                 "application/tsv"
             ],
@@ -175,6 +255,22 @@
             "operationId": "libraryIqGetCirculationDelta",
             "tags": [
                 "circulation"
+            ],
+            "parameters": [
+                {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "Limit the number of results",
+                    "required": false,
+                    "type": "integer"
+                },
+                {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "Offset the results",
+                    "required": false,
+                    "type": "integer"
+                }
             ],
             "produces": [
                 "application/tsv"
@@ -210,6 +306,22 @@
             "tags": [
                 "circulation_in_house"
             ],
+            "parameters": [
+                {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "Limit the number of results",
+                    "required": false,
+                    "type": "integer"
+                },
+                {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "Offset the results",
+                    "required": false,
+                    "type": "integer"
+                }
+            ],
             "produces": [
                 "application/tsv"
             ],
@@ -243,6 +355,22 @@
             "operationId": "libraryIqGetCirculationInHouseDelta",
             "tags": [
                 "circulation_in_house"
+            ],
+            "parameters": [
+                {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "Limit the number of results",
+                    "required": false,
+                    "type": "integer"
+                },
+                {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "Offset the results",
+                    "required": false,
+                    "type": "integer"
+                }
             ],
             "produces": [
                 "application/tsv"
@@ -278,6 +406,22 @@
             "tags": [
                 "patrons"
             ],
+            "parameters": [
+                {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "Limit the number of results",
+                    "required": false,
+                    "type": "integer"
+                },
+                {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "Offset the results",
+                    "required": false,
+                    "type": "integer"
+                }
+            ],
             "produces": [
                 "application/tsv"
             ],
@@ -311,6 +455,22 @@
             "operationId": "libraryIqGetPatronsDelta",
             "tags": [
                 "patrons"
+            ],
+            "parameters": [
+                {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "Limit the number of results",
+                    "required": false,
+                    "type": "integer"
+                },
+                {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "Offset the results",
+                    "required": false,
+                    "type": "integer"
+                }
             ],
             "produces": [
                 "application/tsv"
@@ -346,6 +506,22 @@
             "tags": [
                 "holds"
             ],
+            "parameters": [
+                {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "Limit the number of results",
+                    "required": false,
+                    "type": "integer"
+                },
+                {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "Offset the results",
+                    "required": false,
+                    "type": "integer"
+                }
+            ],
             "produces": [
                 "application/tsv"
             ],
@@ -379,6 +555,22 @@
             "operationId": "libraryIqGetRequestedHoldsFull",
             "tags": [
                 "requested_holds"
+            ],
+            "parameters": [
+                {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "Limit the number of results",
+                    "required": false,
+                    "type": "integer"
+                },
+                {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "Offset the results",
+                    "required": false,
+                    "type": "integer"
+                }
             ],
             "produces": [
                 "application/tsv"
@@ -414,6 +606,22 @@
             "tags": [
                 "requested_holds"
             ],
+            "parameters": [
+                {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "Limit the number of results",
+                    "required": false,
+                    "type": "integer"
+                },
+                {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "Offset the results",
+                    "required": false,
+                    "type": "integer"
+                }
+            ],
             "produces": [
                 "application/tsv"
             ],
@@ -447,6 +655,22 @@
             "operationId": "libraryIqGetFulfilledHoldsFull",
             "tags": [
                 "fulfilled_holds"
+            ],
+            "parameters": [
+                {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "Limit the number of results",
+                    "required": false,
+                    "type": "integer"
+                },
+                {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "Offset the results",
+                    "required": false,
+                    "type": "integer"
+                }
             ],
             "produces": [
                 "application/tsv"
@@ -482,6 +706,22 @@
             "tags": [
                 "fulfilled_holds"
             ],
+            "parameters": [
+                {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "Limit the number of results",
+                    "required": false,
+                    "type": "integer"
+                },
+                {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "Offset the results",
+                    "required": false,
+                    "type": "integer"
+                }
+            ],
             "produces": [
                 "application/tsv"
             ],
@@ -515,6 +755,22 @@
             "operationId": "libraryIqGetUnfilledHoldsFull",
             "tags": [
                 "unfilled_holds"
+            ],
+            "parameters": [
+                {
+                    "name": "limit",
+                    "in": "query",
+                    "description": "Limit the number of results",
+                    "required": false,
+                    "type": "integer"
+                },
+                {
+                    "name": "offset",
+                    "in": "query",
+                    "description": "Offset the results",
+                    "required": false,
+                    "type": "integer"
+                }
             ],
             "produces": [
                 "application/tsv"
