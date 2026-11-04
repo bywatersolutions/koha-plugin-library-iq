@@ -139,6 +139,7 @@ FROM   items i
               ON bt.itemnumber = i.itemnumber
                  AND bt.datesent IS NOT NULL
                  AND bt.datearrived IS NULL
+                 AND bt.datecancelled IS NULL
        LEFT JOIN reserves r
               ON r.itemnumber = i.itemnumber
        LEFT JOIN authorised_values a
@@ -206,6 +207,7 @@ FROM   items i
               ON bt.itemnumber = i.itemnumber
                  AND bt.datesent IS NOT NULL
                  AND bt.datearrived IS NULL
+                 AND bt.datecancelled IS NULL
        LEFT JOIN reserves r
               ON r.itemnumber = i.itemnumber
        LEFT JOIN authorised_values a
